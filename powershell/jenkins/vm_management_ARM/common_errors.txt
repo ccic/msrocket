@@ -1,0 +1,13 @@
+PS C:\home\Work\Azure\Jenkins> azure vm list-usage -l westus
+info:    Executing command vm list-usage
+data:    Name                         Unit   CurrentValue  Limit
+data:    ---------------------------  -----  ------------  -----
+data:    Availability Sets            Count  0             2000
+data:    Total Regional Cores         Count  90            100
+data:    Virtual Machines             Count  54            10000
+data:    Virtual Machine Scale Sets   Count  0             50
+data:    Standard D Family Cores      Count  5             100
+data:    Standard Dv2 Family Cores    Count  61            100
+data:    Standard DS Family Cores     Count  8             100
+data:    Standard A0-A7 Family Cores  Count  16            100
+info:    vm list-usage command OK

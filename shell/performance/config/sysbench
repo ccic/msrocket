@@ -1,0 +1,16 @@
+reboot_storage_server
+
+sysbench_raw_dir=$curr_result_dir/$sysbench_raw_folder
+sysbench_result_dir=$curr_result_dir/$sysbench_result_folder
+if [ ! -d $sysbench_raw_dir ];then mkdir $sysbench_raw_dir;fi
+
+if [ ! -d $sysbench_result_dir ];then mkdir $sysbench_result_dir;fi
+
+create_start_timestamp
+output_state_msg "running_sysbench"
+run_sysbench $storage_remote_ip $storage_remote_port $sysbench_raw_dir $disk_dev_name $auto_create_part_4_sysbench
+output_state_msg "finished_run_sysbench"
+create_end_timestamp
+
+parse_sysbench_data $sysbench_raw_dir $sysbench_result_dir
+mv $sysbench_html $curr_result_dir/

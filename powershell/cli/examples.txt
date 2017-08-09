@@ -1,0 +1,32 @@
+azure location list -json ## list all locations
+## create group
+azure group create <name> <location>
+azure group create "honzhan" "eastasia"
+## create storage account
+azure storage account create -l eastasia --type LRS -g honzhan --json honzhan
+
+C:\Users\honzhan>azure storage account keys list -g honzhan honzhan
+info:    Executing command storage account keys list
++ Getting storage account keys
+data:    Primary: K4TgxPhxM4KfXk1kgkjcDlbHu20AGaYNXib2ulfDXkchzywQmkVa+JINIiWh8S4Tq6Umvo/CDp4woW25bjKSJA==
+data:    Secondary: KTUJ6Kx3rGjqOKsn0eCIlIsrMn1nkS+x6uHSsSStOQZiMUFhYfkuqk74mz8PR8ymJzkl1rDsWlLTHGzG2zY+AA==
+info:    storage account keys list command OK
+
+C:\Users\honzhan>azure storage container create --container vhds -p Blob -a honzhan -k K4TgxPhxM4KfXk1kgkjcDlbHu20AGaYNXib2ulfDXkchzywQmkVa+JINIiWh8S4Tq6Umvo/CDp4woW25bjKSJA==
+info:    Executing command storage container create
++ Creating storage container vhds
++ Getting Storage container information
+data:    {
+data:        name: 'vhds',
+data:        metadata: {},
+data:        etag: '"0x8D36CBA0A23BD53"',
+data:        lastModified: 'Mon, 25 Apr 2016 03:31:07 GMT',
+data:        leaseStatus: 'unlocked',
+data:        leaseState: 'available',
+data:        requestId: '2cf0e8fa-0001-003f-57a2-9ecfeb000000',
+data:        publicAccessLevel: 'Blob'
+data:    }
+info:    storage container create command OK
+
+delete the resource group: "honzhan"
+azure group delete -n honzhan -q --json

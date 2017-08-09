@@ -1,0 +1,32 @@
+## reboot to make clean env
+reboot_perf04
+reboot_perf03
+
+internal_ip_config  ## configure internal ip on hyper-v
+os_para_config      ## some sysctl tuning
+
+create_start_timestamp ## mark start time
+output_state_msg "running_kq_netperf"
+
+distribute_kq_netperf_drv $perf04_corp_ip $perf04_corp_port
+distribute_kq_netperf_drv $perf03_corp_ip $perf03_corp_port
+## launch kqnetperf_server
+kqnetperf_server=$(search_netdrv_server $perf03_corp_ip $perf03_corp_port "kq_netperf")
+if [ $kqnetperf_server == "0" ];then launch_kqnetperf_server $perf03_corp_ip $perf03_corp_port; fi
+kqnetperf_server=$(search_netdrv_server $perf03_corp_ip $perf03_corp_port "kq_netperf")
+if [ $kqnetperf_server == "0" ];then log "fail to launch kqnetperf_server"; exit 1; fi
+
+## calculate the total duration: effective duration, warmup, and ramp down
+ramp_down_dur=$warm_dur
+dur=`expr $duration + $warm_dur + $ramp_down_dur`
+run_netdrv_kqnetperf $dur $internal_nic ##
+
+output_state_msg "finished_run_kq_netperf"
+create_end_timestamp
+
+gen_html_process $curr_result_dir/$kq_netperf_prefix $kq_netperf_marker
+output_state_msg "gen_html_for_k"
+mv $final_output_file $curr_result_dir/${kq_netperf_prefix}.html
+gen_csv_process $curr_result_dir/$kq_netperf_prefix $kq_netperf_marker
+output_state_msg "gen_csv_for_k"
+mv *.csv $curr_result_dir/.

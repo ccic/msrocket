@@ -1,0 +1,32 @@
+## reboot to make clean env
+reboot_perf04
+reboot_perf03
+
+internal_ip_config ## configure internal ip on hyper-v
+os_para_config     ## some sysctl tuning
+
+create_start_timestamp ## mark start time
+output_state_msg "running_netperf"
+## distribute tcpstream to the test servers
+distribute_tcpstream_drv $perf04_corp_ip $perf04_corp_port
+distribute_tcpstream_drv $perf03_corp_ip $perf03_corp_port
+## launch netserver
+netserver=$(search_netdrv_server $perf03_corp_ip $perf03_corp_port "netserver")
+if [ $netserver == "0" ];then launch_netserver $perf03_corp_ip $perf03_corp_port; fi
+netserver=$(search_netdrv_server $perf03_corp_ip $perf03_corp_port "netserver")
+if [ $netserver == "0" ];then log "fail to launch netserver"; exit 1; fi
+
+## calculate the total duration: effective duration, warmup, and ramp down
+ramp_down_dur=$warm_dur
+dur=`expr $duration + $warm_dur + $ramp_down_dur`
+run_netdrv_netperf $dur $internal_nic ##
+
+output_state_msg "finished_run_netperf"
+create_end_timestamp ## mark end time
+
+gen_html_process $curr_result_dir/$netperf_prefix $netperf_marker
+output_state_msg "gen_html_for_n"
+mv $final_output_file $curr_result_dir/${netperf_prefix}.html
+gen_csv_process $curr_result_dir/$netperf_prefix $netperf_marker
+output_state_msg "gen_csv_for_n"
+mv *.csv $curr_result_dir/.

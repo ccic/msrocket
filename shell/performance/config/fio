@@ -1,0 +1,19 @@
+reboot_storage_server
+
+fio_raw_dir=$curr_result_dir/$fio_raw_folder
+fio_result_dir=$curr_result_dir/$fio_result_folder
+
+if [ ! -d $fio_raw_dir ];then mkdir $fio_raw_dir;fi
+
+if [ ! -d $fio_result_dir ];then mkdir $fio_result_dir;fi
+
+create_start_timestamp
+output_state_msg "running_fio"
+#setup_device_fs $fio_remote_ip
+run_fio_jobs $storage_remote_ip $storage_remote_port $fio_raw_dir $disk_part $fio_engine
+#run_fio $storage_remote_ip $storage_remote_port $fio_raw_dir "da1"
+output_state_msg "finished_run_fio"
+create_end_timestamp
+
+parse_fio_data $fio_raw_dir $fio_result_dir
+mv $fio_html $curr_result_dir/

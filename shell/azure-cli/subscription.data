@@ -1,0 +1,41 @@
+[
+  {
+    "id": "c4528d9e-c99a-48bb-b12d-fde2176a43b8",
+    "name": "OSTC Shanghai Dev",
+    "user": {
+      "name": "honzhan@microsoft.com",
+      "type": "user"
+    },
+    "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+    "state": "Enabled",
+    "isDefault": true,
+    "registeredProviders": [],
+    "environmentName": "AzureCloud"
+  },
+  {
+    "id": "76907309-9f00-4b15-a06a-f45e789ba96c",
+    "name": "OSTC Shanghai PM",
+    "user": {
+      "name": "honzhan@microsoft.com",
+      "type": "user"
+    },
+    "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+    "state": "Enabled",
+    "isDefault": false,
+    "registeredProviders": [],
+    "environmentName": "AzureCloud"
+  },
+  {
+    "id": "78fbc377-4c98-4b26-8d3a-751df38fca70",
+    "name": "OSTC BSD",
+    "user": {
+      "name": "honzhan@microsoft.com",
+      "type": "user"
+    },
+    "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+    "state": "Enabled",
+    "isDefault": false,
+    "registeredProviders": [],
+    "environmentName": "AzureCloud"
+  }
+]

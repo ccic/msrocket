@@ -1,0 +1,209 @@
+https://github.com/cloudfoundry-incubator/bosh-azure-cpi-release/blob/master/docs/get-started/create-service-principal.md
+1. azure account list --json
+record id and tenantId for later use
+[
+  {
+    "id": "76907309-9f00-4b15-a06a-f45e789ba96c",
+    "name": "OSTC Shanghai PM",
+    "user": {
+      "name": "honzhan@microsoft.com",
+      "type": "user"
+    },
+    "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+    "state": "Enabled",
+    "isDefault": false,
+    "registeredProviders": [],
+    "environmentName": "AzureCloud"
+  },
+  {
+    "id": "c4528d9e-c99a-48bb-b12d-fde2176a43b8",
+    "name": "OSTC Shanghai Dev",
+    "user": {
+      "name": "honzhan@microsoft.com",
+      "type": "user"
+    },
+    "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+    "state": "Enabled",
+    "isDefault": true,
+    "registeredProviders": [],
+    "environmentName": "AzureCloud"
+  }
+]
+2. Creating an Azure Active Directory (AAD) application: password is "CLIENT-SECRET", AppId is "CLIENT-ID"
+C:\home\Work\Azure>az ad app create --display-name "Service Principal for Creating FreeBSD VM" --password "p@s$w0rd" --homepage "http://freebsdvm" --identifier-uris "http://freebsdvm"
+{
+  "appId": "c6466131-0836-4935-9acd-e856b5eacc91",
+  "appPermissions": null,
+  "availableToOtherTenants": false,
+  "displayName": "Service Principal for Creating FreeBSD VM",
+  "homepage": "http://freebsdvm",
+  "identifierUris": [
+    "http://freebsdvm"
+  ],
+  "objectId": "b63dbb78-dda3-4764-839d-47ec36eaf3c4",
+  "objectType": "Application",
+  "replyUrls": []
+}
+
+3. Create a Service Principal
+C:\home\Work\Azure>az ad sp create --id c6466131-0836-4935-9acd-e856b5eacc91
+{
+  "appId": "c6466131-0836-4935-9acd-e856b5eacc91",
+  "displayName": "Service Principal for Creating FreeBSD VM",
+  "objectId": "1fd50f5b-bc3d-4493-bed6-0398e63ee8e2",
+  "objectType": "ServicePrincipal",
+  "servicePrincipalNames": [
+    "c6466131-0836-4935-9acd-e856b5eacc91",
+    "http://freebsdvm"
+  ]
+}
+
+4. Assigning roles to your Service Principal
+C:\home\Work\Azure>az role assignment create --assignee "1fd50f5b-bc3d-4493-bed6-0398e63ee8e2" --role "Contributor"
+{
+  "id": "/subscriptions/c4528d9e-c99a-48bb-b12d-fde2176a43b8/providers/Microsoft.Authorization/roleAssignments/48cd5998-ec10-4ef1-9109-de932f9ad50b",
+  "name": "48cd5998-ec10-4ef1-9109-de932f9ad50b",
+  "properties": {
+    "principalId": "1fd50f5b-bc3d-4493-bed6-0398e63ee8e2",
+    "roleDefinitionId": "/subscriptions/c4528d9e-c99a-48bb-b12d-fde2176a43b8/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c",
+    "scope": "/subscriptions/c4528d9e-c99a-48bb-b12d-fde2176a43b8"
+  },
+  "type": "Microsoft.Authorization/roleAssignments"
+}
+
+5.Verify Your Service Principal
+az login --username c6466131-0836-4935-9acd-e856b5eacc91 --password p@s\$w0rd --service-principal --tenant 72f988bf-86f1-41af-91ab-2d7cd011db47
+
+
+=============================================
+C:\home\Study\django\django_extjs_tutorial>azure ad app show --search "Service Principal for Creating FreeBSD VM" --json
+{}
+
+C:\home\Study\django\django_extjs_tutorial>azure ad app show --search "Service Principal for Creating FreeBSD VM" --json|python -c "import json,sys;obj=json.load(sys.stdin);print(len(obj))"
+0
+
+C:\home\Study\django\django_extjs_tutorial>azure ad app create --name "Service Principal for Creating FreeBSD VM" --password "ICUI4CU" --home-page "http://www.freebsdSPN" --identifier-uris "http://www.freebsdSPN" --json
+{
+  "objectId": "ae899308-32fb-48c5-9403-beb44648bc45",
+  "objectType": "Application",
+  "appId": "d91ebded-df2f-4e06-917f-b3451cdf6724",
+  "availableToOtherTenants": false,
+  "displayName": "Service Principal for Creating FreeBSD VM",
+  "identifierUris": [
+    "http://www.freebsdSPN"
+  ],
+  "replyUrls": []
+}
+
+C:\home\Study\django\django_extjs_tutorial>azure ad app show --search "Service Principal for Creating FreeBSD VM" --json| python -c "import json,sys;obj=json.load(sys.stdin); n=[str(x['appId']) for x in obj];print(n);"
+['d91ebded-df2f-4e06-917f-b3451cdf6724']
+
+C:\home\Study\django\django_extjs_tutorial>azure ad app show --search "Service Principal for Creating FreeBSD VM" --json| python -c "import json,sys;obj=json.load(sys.stdin); n=[str(x['appId']) for x in obj];print(n[0]);"
+d91ebded-df2f-4e06-917f-b3451cdf6724
+
+C:\home\Study\django\django_extjs_tutorial>azure ad sp create d91ebded-df2f-4e06-917f-b3451cdf6724 --json
+{
+  "objectId": "b6eb79f1-911d-4a0e-8629-6aabafae9ffa",
+  "objectType": "ServicePrincipal",
+  "displayName": "Service Principal for Creating FreeBSD VM",
+  "appId": "d91ebded-df2f-4e06-917f-b3451cdf6724",
+  "servicePrincipalNames": [
+    "d91ebded-df2f-4e06-917f-b3451cdf6724",
+    "http://www.freebsdSPN"
+  ]
+}
+
+C:\home\Study\django\django_extjs_tutorial>azure account list --json|python -c "import json,sys;obj=json.load(sys.stdin);n=[str(x['id']) for x in obj if x['isDefault']==True ]; print(n[0]);"
+cc1624c7-3f1d-4ed3-a855-668a86e96ad8
+
+C:\home\Study\django\django_extjs_tutorial>azure role assignment create --spn "http://www.freebsdSPN" --roleName "Contributor" --subscription cc1624c7-3f1d-4ed3-a855-668a86e96ad8 --json
+{
+  "id": "/subscriptions/cc1624c7-3f1d-4ed3-a855-668a86e96ad8/providers/Microsoft.Authorization/roleAssignments/9492a03a-c160-4501-9891-07ac2c8852d5",
+  "name": "9492a03a-c160-4501-9891-07ac2c8852d5",
+  "type": "Microsoft.Authorization/roleAssignments",
+  "properties": {
+    "scope": "/subscriptions/cc1624c7-3f1d-4ed3-a855-668a86e96ad8",
+    "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+    "principalId": "b6eb79f1-911d-4a0e-8629-6aabafae9ffa",
+    "aADObject": {
+      "objectId": "b6eb79f1-911d-4a0e-8629-6aabafae9ffa",
+      "objectType": "ServicePrincipal",
+      "displayName": "Service Principal for Creating FreeBSD VM",
+      "servicePrincipalNames": [
+        "http://www.freebsdSPN",
+        "d91ebded-df2f-4e06-917f-b3451cdf6724"
+      ]
+    },
+    "roleName": "Contributor"
+  }
+}
+
+C:\home\Study\django\django_extjs_tutorial>azure account list --json
+[
+  {
+    "id": "c4528d9e-c99a-48bb-b12d-fde2176a43b8",
+    "name": "OSTC Shanghai Dev",
+    "user": {
+      "name": "b8a77132-6ee7-481a-8a29-22797c849e1a",
+      "type": "servicePrincipal"
+    },
+    "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+    "state": "Enabled",
+    "isDefault": false,
+    "registeredProviders": [],
+    "environmentName": "AzureCloud"
+  },
+  {
+    "id": "76907309-9f00-4b15-a06a-f45e789ba96c",
+    "name": "OSTC Shanghai PM",
+    "user": {
+      "name": "honzhan@microsoft.com",
+      "type": "user"
+    },
+    "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+    "state": "Enabled",
+    "isDefault": false,
+    "registeredProviders": [],
+    "environmentName": "AzureCloud"
+  },
+  {
+    "id": "78fbc377-4c98-4b26-8d3a-751df38fca70",
+    "name": "OSTC BSD",
+    "user": {
+      "name": "honzhan@microsoft.com",
+      "type": "user"
+    },
+    "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+    "state": "Enabled",
+    "isDefault": false,
+    "registeredProviders": [],
+    "environmentName": "AzureCloud"
+  },
+  {
+    "id": "cc1624c7-3f1d-4ed3-a855-668a86e96ad8",
+    "name": "OSTC Shanghai Engineering",
+    "user": {
+      "name": "hongjiang@shostc.partner.onmschina.cn",
+      "type": "user"
+    },
+    "tenantId": "89e1b688-8d74-4446-9680-54d0a43a4f0d",
+    "state": "Enabled",
+    "isDefault": true,
+    "registeredProviders": [],
+    "environmentName": "AzureChinaCloud"
+  }
+]
+
+azure login --username d91ebded-df2f-4e06-917f-b3451cdf6724 --password ICUI4CU --service-principal --tenant 89e1b688-8d74-4446-9680-54d0a43a4f0d -e AzureChinaCloud
+====================================================================
+C:\home\Work\Azure>az account set --subscription "c4528d9e-c99a-48bb-b12d-fde2176a43b8"
+
+C:\home\Work\Azure>az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/c4528d9e-c99a-48bb-b12d-fde2176a43b8"
+Retrying role assignment creation: 1/36
+{
+  "appId": "122d6db7-6489-45d6-829d-ccf97502776f",
+  "displayName": "azure-cli-2017-04-27-02-06-24",
+  "name": "http://azure-cli-2017-04-27-02-06-24",
+  "password": "96cc6a82-dcd3-4998-8460-4f1e73cb4120",
+  "tenant": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+}

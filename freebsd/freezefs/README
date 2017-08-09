@@ -1,0 +1,1 @@
+This tool is used to test filesystem freeze and thaw. Please move this folder to source code tree's directory: $src/sbin, and make it.

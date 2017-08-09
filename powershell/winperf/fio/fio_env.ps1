@@ -1,0 +1,10 @@
+$fio_block_size_list="4 8"
+$fio_numjobs_list="1 8"
+$fio_engine="windowsaio"
+$fio_iodepth_list="1 16 32 64 128"
+$fio_size="100G"
+$fio_runtime="300"
+
+$fio_filename="\\.\PhysicalDrive14"
+$fio_modes="write read randread randwrite"
+$fio_log_file="fio_log.txt"

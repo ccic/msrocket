@@ -1,0 +1,26 @@
+reboot_perf04
+reboot_perf03
+
+internal_ip_config
+os_para_config
+create_start_timestamp
+output_state_msg "running_iperf"
+#run_iperf
+
+launch_iperf=$(launch_iperf_server $perf03_corp_ip $perf03_corp_port)
+if [ $launch_iperf != "0" ]; then log "Fail to launch iperf as expected"; exit 1; fi
+
+## calculate the total duration: effective duration, warmup, and ramp down
+ramp_down_dur=$warm_dur
+dur=`expr $duration + $warm_dur + $ramp_down_dur`
+run_netdrv_iperf $dur $internal_nic
+
+output_state_msg "finished_run_iperf"
+create_end_timestamp
+
+sh ${base}/gen_html.sh $curr_result_dir/$iperf_prefix $iperf_marker
+output_state_msg "gen_html_for_$iperf_marker"
+mv $final_output_file $curr_result_dir/${iperf_prefix}.html
+sh ${base}/gen_csv.sh $curr_result_dir/$iperf_prefix $iperf_marker
+output_state_msg "gen_csv_for_$iperf_marker"
+mv *.csv $curr_result_dir/.

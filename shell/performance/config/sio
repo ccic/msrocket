@@ -1,0 +1,18 @@
+reboot_storage_server
+
+sio_raw_dir=$curr_result_dir/${sio_prefix}${storage_raw_folder_postfix} ## this folder saves the raw output
+sio_result_dir=$curr_result_dir/${sio_prefix}${storage_result_folder_postfix} ## this folder saves the csv files
+
+if [ ! -d $sio_raw_dir ];then mkdir $sio_raw_dir;fi
+
+if [ ! -d $sio_result_dir ];then mkdir $sio_result_dir;fi
+
+create_start_timestamp
+output_state_msg "running_sio"
+
+run_sio $storage_remote_ip $storage_remote_port $sio_raw_dir "/dev/"${disk_part}
+output_state_msg "finished_run_sio"
+create_end_timestamp
+
+parse_sio_data $sio_raw_dir $sio_result_dir
+mv $sio_html $curr_result_dir/

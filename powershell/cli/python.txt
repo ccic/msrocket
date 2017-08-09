@@ -1,0 +1,1 @@
+pkg install py27-pip-8.0.2

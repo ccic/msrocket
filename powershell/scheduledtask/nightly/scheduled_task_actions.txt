@@ -1,0 +1,2 @@
+Program: powershell.exe
+Add arguments: -ExecutionPolicy Bypass -command C:/Users/honzhan/Nightly/shutdown_allvm_except_nightly.ps1 2>&1 > C:/Users/honzhan/Nightly/shutdown_vm.log

@@ -1,0 +1,4 @@
+container(3-63): letter, number, '-'. must begin with letter or number. 2 consecutive '-' is forbidden.
+storage account (3-24): only lower case letters and numbers. must start with letter.
+vmname (3-64): letter, number, '-'
+group (80): letter, number, '-', '_', '(', ')', '.'

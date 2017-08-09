@@ -1,0 +1,1 @@
+(get-azurevmsize northeurope).Name

@@ -1,0 +1,12 @@
+create_start_timestamp
+output_state_msg "running_ntttcp"
+ramp_down_dur=$warm_dur
+dur=`expr $duration + $warm_dur + $ramp_down_dur`
+run_netdrv_ntttcp $dur "eth0"
+
+sh ${base}/gen_html.sh $curr_result_dir/$ntttcp_prefix $ntttcp_marker
+output_state_msg "gen_html_for_n"
+mv $final_output_file $curr_result_dir/${ntttcp_prefix}.html
+sh ${base}/gen_csv.sh $curr_result_dir/$ntttcp_prefix $ntttcp_marker
+output_state_msg "gen_csv_for_n"
+mv *.csv $curr_result_dir/.
